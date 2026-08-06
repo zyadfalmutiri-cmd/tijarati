@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import { MobileNav } from "./mobile-nav";
 import { ThemeToggle } from "./theme-toggle";
 import { NotificationsBell } from "./notifications-bell";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserMenu } from "./user-menu";
 import { LiveBadge } from "@/components/dashboard/live-badge";
 
 const titles: Record<string, { title: string; subtitle: string }> = {
@@ -38,9 +38,7 @@ export function Topbar() {
           <LiveBadge />
           <ThemeToggle />
           <NotificationsBell />
-          <Avatar className="h-9 w-9 border">
-            <AvatarFallback className="bg-primary/10 text-primary font-bold">ت</AvatarFallback>
-          </Avatar>
+          <UserMenu />
         </div>
       </div>
     </header>
