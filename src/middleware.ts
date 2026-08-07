@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+...
+setAll: (cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) => {
+
 
 // Routes reachable without an active session.
 const PUBLIC_PATHS = ["/login", "/signup", "/auth/callback"];
