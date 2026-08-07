@@ -5,6 +5,7 @@ import { LowStockAlert } from "@/components/inventory/low-stock-alert";
 import { InventoryTable } from "@/components/inventory/inventory-table";
 import { InventoryMovementChart } from "@/components/inventory/inventory-movement-chart";
 import { BestWorstSellers } from "@/components/inventory/best-worst-sellers";
+import { AddProductDialog } from "@/components/inventory/add-product-dialog";
 import { useProducts } from "@/hooks/use-products";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 
@@ -16,6 +17,9 @@ export default function InventoryPage() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-end">
+        <AddProductDialog />
+      </div>
       <LowStockAlert />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <KpiCard index={0} title="إجمالي الكمية" value={formatNumber(totalStock)} icon={Boxes} accent="primary" />
