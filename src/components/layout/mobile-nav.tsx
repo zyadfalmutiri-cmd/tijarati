@@ -7,12 +7,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, Sparkles } from "lucide-react";
 import {
   LayoutDashboard, Building2, LineChart, Boxes, Users, FileBarChart,
-  Plug, Bot, Bell, Settings,
+  Plug, Bot, Bell, Settings, ShoppingCart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const nav = [
   { href: "/", label: "اللوحة الرئيسية", icon: LayoutDashboard },
+  { href: "/orders", label: "الطلبات", icon: ShoppingCart },
   { href: "/branches", label: "الفروع", icon: Building2 },
   { href: "/analytics", label: "التحليلات", icon: LineChart },
   { href: "/inventory", label: "المخزون", icon: Boxes },
