@@ -1,8 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-...
-setAll: (cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) => {
-
 
 // Routes reachable without an active session.
 const PUBLIC_PATHS = ["/login", "/signup", "/auth/callback"];
@@ -19,7 +16,7 @@ export async function middleware(request: NextRequest) {
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll: () => request.cookies.getAll(),
-setAll: (cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) => {
+      setAll: (cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) => {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request: { headers: request.headers } });
         cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
