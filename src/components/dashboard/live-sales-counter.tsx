@@ -1,16 +1,20 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { TrendingUp, Zap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { useKPIs } from "@/hooks/use-kpis";
+import { createClient } from "@/lib/supabase/client";
 
 export function LiveSalesCounter() {
   const { data: kpis } = useKPIs();
   const [liveTotal, setLiveTotal] = useState(0);
   const [pulse, setPulse] = useState(false);
   const initialized = useRef(false);
+
+  // لا تفعّل المحاكاة إلا في وضع العرض التجريبي (بدون اتصال Supabase حقيقي).
+  const isDemoMode = !createClient();
 
   useEffect(() => {
     if (kpis && !initialized.current) {
@@ -19,7 +23,15 @@ export function LiveSalesCounter() {
     }
   }, [kpis]);
 
+  // في الوضع الحقيقي، تابع رقم المبيعات الفعلي كل ما يتحدث من قاعدة البيانات
+  // بدل ما نولّد زيادات وهمية.
   useEffect(() => {
+    if (isDemoMode || !kpis) return;
+    setLiveTotal(kpis.todaySales);
+  }, [isDemoMode, kpis]);
+
+  useEffect(() => {
+    if (!isDemoMode) return;
     const interval = setInterval(() => {
       if (Math.random() > 0.35) {
         const bump = Math.round((20 + Math.random() * 260) / 5) * 5;
@@ -29,7 +41,7 @@ export function LiveSalesCounter() {
       }
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isDemoMode]);
 
   return (
     <Card className="relative overflow-hidden border-primary/20 bg-gradient-to-br from-primary/[0.06] via-card to-card">
@@ -44,7 +56,7 @@ export function LiveSalesCounter() {
           </div>
           <span className="flex items-center gap-1 text-xs text-success font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse-dot" />
-            الآن
+            {isDemoMode ? "عرض تجريبي" : "الآن"}
           </span>
         </div>
         <motion.p
