@@ -61,7 +61,12 @@ function LoginForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">كلمة المرور</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">كلمة المرور</Label>
+              <Link href="/forgot-password" className="text-xs text-primary hover:underline">
+                نسيت كلمة المرور؟
+              </Link>
+            </div>
             <Input
               id="password"
               type="password"
@@ -80,7 +85,7 @@ function LoginForm() {
         <p className="text-sm text-muted-foreground text-center mt-4">
           ما عندك حساب؟{" "}
           <Link href="/signup" className="text-primary font-medium hover:underline">
-            أنشئ حساب جديد
+            سوي حساب جديد
           </Link>
         </p>
       </CardContent>
