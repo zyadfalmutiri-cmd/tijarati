@@ -43,21 +43,37 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
         xl: "calc(var(--radius) + 4px)",
       },
+      transitionDuration: {
+        400: "400ms",
+      },
+      transitionTimingFunction: {
+        calm: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
       keyframes: {
         "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
         "accordion-up": { from: { height: "var(--radix-accordion-content-height)" }, to: { height: "0" } },
-        "pulse-dot": { "0%,100%": { opacity: "1" }, "50%": { opacity: "0.4" } },
+        "pulse-dot": { "0%,100%": { opacity: "1" }, "50%": { opacity: "0.45" } },
         shimmer: { "0%": { backgroundPosition: "-1000px 0" }, "100%": { backgroundPosition: "1000px 0" } },
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "scale-in": {
+          "0%": { opacity: "0", transform: "scale(0.97)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-dot": "pulse-dot 1.6s ease-in-out infinite",
+        "pulse-dot": "pulse-dot 2s cubic-bezier(0.22, 1, 0.36, 1) infinite",
         shimmer: "shimmer 2.5s infinite linear",
+        "fade-up": "fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "scale-in": "scale-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
       boxShadow: {
-        soft: "0 2px 20px -6px rgb(0 0 0 / 0.08)",
-        glow: "0 0 0 1px rgb(0 0 0 / 0.04), 0 8px 30px -8px rgb(0 0 0 / 0.15)",
+        soft: "0 2px 20px -6px rgb(60 40 25 / 0.10)",
+        glow: "0 0 0 1px rgb(60 40 25 / 0.05), 0 10px 34px -10px rgb(60 40 25 / 0.18)",
       },
     },
   },
