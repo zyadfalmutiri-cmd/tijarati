@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentOrgId } from "@/lib/supabase/org";
+import { useOrgId } from "@/hooks/use-org-id";
 import { computeKPIs } from "@/lib/mock-data/generators";
 import type { KPISet } from "@/lib/types/domain";
 
@@ -83,8 +84,9 @@ async function fromSupabase(): Promise<KPISet> {
 
 export function useKPIs() {
   const supabase = createClient();
+  const { data: orgId } = useOrgId();
   return useQuery({
-    queryKey: ["kpis"],
+    queryKey: ["kpis", orgId],
     queryFn: async (): Promise<KPISet> => (supabase ? fromSupabase() : computeKPIs()),
     refetchInterval: 60_000,
   });
