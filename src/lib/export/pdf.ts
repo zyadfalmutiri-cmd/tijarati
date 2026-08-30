@@ -1,11 +1,14 @@
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-
-export function exportToPDF(
+export async function exportToPDF(
   title: string,
   sections: { heading: string; rows: (string | number)[][]; columns: string[] }[],
   filename: string
 ) {
+  // تحميل كسول لتقليل حجم الحزمة الأساسي (P2) — ما يتحمّل إلا وقت الضغط على "تصدير".
+  const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+    import("jspdf"),
+    import("jspdf-autotable"),
+  ]);
+
   const doc = new jsPDF();
   doc.setFontSize(18);
   doc.text(title, 14, 18);
