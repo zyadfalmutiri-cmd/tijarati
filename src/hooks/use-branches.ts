@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentOrgId } from "@/lib/supabase/org";
+import { useOrgId } from "@/hooks/use-org-id";
 import { branches, orders, expenses } from "@/lib/mock-data/generators";
 
 export interface BranchPerformance {
@@ -89,8 +90,9 @@ async function fromSupabase(): Promise<BranchPerformance[]> {
 
 export function useBranches() {
   const supabase = createClient();
+  const { data: orgId } = useOrgId();
   return useQuery({
-    queryKey: ["branches"],
+    queryKey: ["branches", orgId],
     queryFn: async (): Promise<BranchPerformance[]> => (supabase ? fromSupabase() : fromMock()),
   });
 }
