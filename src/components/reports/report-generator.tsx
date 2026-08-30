@@ -49,14 +49,14 @@ export function ReportGenerator() {
     }
   }
 
-  function handleExport(format: "csv" | "excel" | "pdf") {
+  async function handleExport(format: "csv" | "excel" | "pdf") {
     const rows = buildRows();
     const name = `تجارتي-${reportType}-${new Date().toISOString().slice(0, 10)}`;
     if (format === "csv") exportToCSV(name, rows as any);
-    if (format === "excel") exportToExcel(name, [{ name: "التقرير", rows: rows as any }]);
+    if (format === "excel") await exportToExcel(name, [{ name: "التقرير", rows: rows as any }]);
     if (format === "pdf") {
       const columns = Object.keys(rows[0] ?? {});
-      exportToPDF(
+      await exportToPDF(
         reportTypes.find((r) => r.value === reportType)?.label ?? "تقرير",
         [{ heading: "البيانات", columns, rows: rows.map((r: any) => columns.map((c) => r[c])) }],
         name
