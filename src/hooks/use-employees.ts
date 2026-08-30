@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentOrgId } from "@/lib/supabase/org";
+import { useOrgId } from "@/hooks/use-org-id";
 import { employees, branches } from "@/lib/mock-data/generators";
 
 async function fromSupabase() {
@@ -43,8 +44,9 @@ function fromMock() {
 
 export function useEmployees() {
   const supabase = createClient();
+  const { data: orgId } = useOrgId();
   return useQuery({
-    queryKey: ["employees"],
+    queryKey: ["employees", orgId],
     queryFn: async () => (supabase ? fromSupabase() : fromMock()),
   });
 }
