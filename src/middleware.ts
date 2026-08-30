@@ -10,8 +10,20 @@ export async function middleware(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Demo mode (no Supabase env vars) — no auth gating, app runs on mock data.
-  if (!supabaseUrl || !supabaseAnonKey) return response;
+  if (!supabaseUrl || !supabaseAnonKey) {
+    // Demo mode (no Supabase env vars) is only safe outside production: it
+    // serves the app with mock data and NO auth gating. If this ever happens
+    // in production — a missing/misspelled env var on the hosting platform —
+    // fail closed instead of silently exposing the full dashboard with no
+    // login. (تدقيق الأمان S3)
+    if (process.env.NODE_ENV === "production") {
+      return new NextResponse(
+        "التطبيق غير مُعد بشكل صحيح (متغيرات Supabase غير موجودة). تواصل مع الدعم.",
+        { status: 503, headers: { "content-type": "text/plain; charset=utf-8" } }
+      );
+    }
+    return response;
+  }
 
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
