@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentOrgId } from "@/lib/supabase/org";
+import { useOrgId } from "@/hooks/use-org-id";
 import { notifications as seedNotifications } from "@/lib/mock-data/generators";
 import type { AppNotification } from "@/lib/types/domain";
 
@@ -39,9 +40,11 @@ async function fromSupabase(): Promise<AppNotification[]> {
 export function useNotifications() {
   const supabase = createClient();
   const queryClient = useQueryClient();
+  const { data: orgId } = useOrgId();
+  const queryKey = ["notifications", orgId] as const;
 
   const query = useQuery({
-    queryKey: ["notifications"],
+    queryKey,
     queryFn: async (): Promise<AppNotification[]> => (supabase ? fromSupabase() : seedNotifications),
     staleTime: supabase ? 30_000 : Infinity,
   });
@@ -51,13 +54,14 @@ export function useNotifications() {
     if (supabase) return;
     const interval = setInterval(() => {
       const template = liveMessages[Math.floor(Math.random() * liveMessages.length)];
-      queryClient.setQueryData<AppNotification[]>(["notifications"], (old = []) => [
+      queryClient.setQueryData<AppNotification[]>(queryKey, (old = []) => [
         { ...template, id: `live-${Date.now()}`, createdAt: new Date().toISOString(), read: false },
         ...old,
       ]);
     }, 45_000);
     return () => clearInterval(interval);
-  }, [supabase, queryClient]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supabase, queryClient, orgId]);
 
   return query;
 }
@@ -65,14 +69,17 @@ export function useNotifications() {
 export function useMarkAllRead() {
   const supabase = createClient();
   const queryClient = useQueryClient();
+  const { data: orgId } = useOrgId();
 
   return async () => {
     if (supabase) {
-      const orgId = await getCurrentOrgId(supabase);
-      if (orgId) {
-        await supabase.from("notifications").update({ read: true }).eq("org_id", orgId).eq("read", false);
+      const currentOrgId = orgId ?? (await getCurrentOrgId(supabase));
+      if (currentOrgId) {
+        await supabase.from("notifications").update({ read: true }).eq("org_id", currentOrgId).eq("read", false);
       }
     }
-    queryClient.setQueryData<AppNotification[]>(["notifications"], (old = []) => old.map((n) => ({ ...n, read: true })));
+    queryClient.setQueryData<AppNotification[]>(["notifications", orgId], (old = []) =>
+      old.map((n) => ({ ...n, read: true }))
+    );
   };
 }
