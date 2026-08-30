@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentOrgId } from "@/lib/supabase/org";
+import { useOrgId } from "@/hooks/use-org-id";
 import { orders } from "@/lib/mock-data/generators";
 import type { Order } from "@/lib/types/domain";
 
@@ -30,8 +31,9 @@ async function fromSupabase(limit?: number): Promise<Order[]> {
 
 export function useOrders(limit?: number) {
   const supabase = createClient();
+  const { data: orgId } = useOrgId();
   return useQuery({
-    queryKey: ["orders", limit],
+    queryKey: ["orders", orgId, limit],
     queryFn: async (): Promise<Order[]> =>
       supabase ? fromSupabase(limit) : limit ? orders.slice(0, limit) : orders,
   });
