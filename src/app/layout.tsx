@@ -8,8 +8,15 @@ import { Toaster } from "sonner";
 const cairo = Cairo({ subsets: ["arabic", "latin"], variable: "--font-cairo", display: "swap" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: "تجارتي — منصة تحليلات الأعمال المجانية",
   description: "وحّد متاجرك وفروعك وأنظمة نقاط البيع في لوحة تحكم واحدة، مجانًا بالكامل.",
+  openGraph: {
+    title: "تجارتي — منصة تحليلات الأعمال المجانية",
+    description: "وحّد متاجرك وفروعك وأنظمة نقاط البيع في لوحة تحكم واحدة، مجانًا بالكامل.",
+    locale: "ar_SA",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
