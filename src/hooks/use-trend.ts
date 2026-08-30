@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentOrgId } from "@/lib/supabase/org";
+import { useOrgId } from "@/hooks/use-org-id";
 import { getTrend } from "@/lib/mock-data/generators";
 import type { Granularity, TrendPoint } from "@/lib/types/domain";
 
@@ -60,8 +61,9 @@ async function fromSupabase(granularity: Granularity): Promise<TrendPoint[]> {
 
 export function useTrend(granularity: Granularity) {
   const supabase = createClient();
+  const { data: orgId } = useOrgId();
   return useQuery({
-    queryKey: ["trend", granularity],
+    queryKey: ["trend", orgId, granularity],
     queryFn: async (): Promise<TrendPoint[]> =>
       supabase ? fromSupabase(granularity) : getTrend(granularity),
   });
