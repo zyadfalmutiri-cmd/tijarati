@@ -24,5 +24,17 @@ export async function GET(req: NextRequest, { params }: { params: { connector: s
   const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/${params.connector}/callback`;
   const state = crypto.randomUUID();
   const authUrl = adapter.getAuthUrl(redirectUri, state);
-  return NextResponse.json({ authUrl, state });
+
+  const response = NextResponse.json({ authUrl });
+  // نخزّن state في كوكي httpOnly بدل الاكتفاء بإرجاعه للعميل — هذا هو مصدر
+  // الحقيقة الوحيد الذي يتحقق منه الـ callback لاحقًا لمنع CSRF على تدفق
+  // OAuth (تدقيق الأمان S4). صلاحية 10 دقائق تكفي لإكمال الدخول عند المزوّد.
+  response.cookies.set(`oauth_state_${params.connector}`, state, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 600,
+    path: `/api/integrations/${params.connector}`,
+  });
+  return response;
 }
