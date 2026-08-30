@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentOrgId } from "@/lib/supabase/org";
+import { useOrgId } from "@/hooks/use-org-id";
 import { products } from "@/lib/mock-data/generators";
 import type { Product } from "@/lib/types/domain";
 
@@ -29,8 +30,9 @@ async function fromSupabase(): Promise<Product[]> {
 
 export function useProducts() {
   const supabase = createClient();
+  const { data: orgId } = useOrgId();
   return useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", orgId],
     queryFn: async (): Promise<Product[]> => (supabase ? fromSupabase() : products),
   });
 }
